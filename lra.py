@@ -7,7 +7,7 @@ import numpy as np
 
 
 def low_rank_align(X, Y, Cxy, d=None, mu=0.8):
-    """Input: data matrices X,Y,  correspondence matrix C, 
+    """Input: data matrices X,Y,  correspondence matrix Cxy, 
               embedding dimension d, and correspondence weight mu
        Output: embedded X and embedded Y
     """
@@ -31,7 +31,7 @@ def low_rank_align(X, Y, Cxy, d=None, mu=0.8):
     return Xembed, Yembed
 
 
-def low_rank_repr(X,n_dim):
+def low_rank_repr(X, n_dim):
     U, S, V = svd(X.T,full_matrices=False)
     mask = S > 1
     V = V[mask]
@@ -45,14 +45,13 @@ def demo():
     n_sline = 50
     n_lline = 20
     noise_std = .05
-    n_dim = 2
 
     X,_ = dollar_sign(n_sline,n_lline)
     X += np.random.normal(scale=noise_std)
     Y = X + np.random.normal(scale=noise_std)
     Y = np.rot90(Y).T[:,(0,2,1)]
 
-    Xembed, Yembed = low_rank_align(X,Y,np.eye(n_sline+n_lline),d=n_dim)
+    Xembed, Yembed = low_rank_align(X,Y,np.eye(n_sline+n_lline),d=2)
 
     fig = plt.figure()
     ax1 = fig.add_subplot(1,3,1,projection='3d')
