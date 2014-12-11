@@ -7,7 +7,7 @@ import numpy as np
 
 
 def low_rank_align(X, Y, Cxy, d=None, mu=0.8):
-    """Input: data matrices X,Y,  correspondence matrix Cxy, 
+    """Input: data matrices X,Y,  correspondence matrix Cxy,
               embedding dimension d, and correspondence weight mu
        Output: embedded X and embedded Y
     """
@@ -65,33 +65,34 @@ def demo():
     ax3 = fig.add_subplot(1,3,3)
     ax3.set_title('Aligned 2-D Dollars')
     ax3.scatter(Xembed[:n_sline,0],Xembed[:n_sline,1],c='b',edgecolor='b',s=150)
-    ax3.scatter(Xembed[n_sline:,0],Xembed[n_sline:,1],c='b',edgecolor='b',s=165,marker='*')
+    ax3.scatter(Xembed[n_sline:,0],Xembed[n_sline:,1],c='b',edgecolor='b',s=165,
+                marker='*')
     ax3.scatter(Yembed[:n_sline,0],Yembed[:n_sline,1],c='r',edgecolor='r',s=50)
-    ax3.scatter(Yembed[n_sline:,0],Yembed[n_sline:,1],c='r',edgecolor='r',s=60,marker='*')
+    ax3.scatter(Yembed[n_sline:,0],Yembed[n_sline:,1],c='r',edgecolor='r',s=60,
+                marker='*')
+    ax3.xaxis.set_visible(False)
+    ax3.yaxis.set_visible(False)
     plt.show()
 
 
 def dollar_sign(num_s_points, num_bar_points):
     '''returns a tuple of (3d points, 1d labels)'''
-    s = S_pt_cloud(num_s_points)
-    bar = np.zeros((num_bar_points,3))
-    bar[:,1] = np.random.uniform(-1,1,num_bar_points)
-    bar[:,2] = np.linspace(s[:,2].min()-1,s[:,2].max()+1,num_bar_points)
+    s = s_curve(num_s_points)
+    bar_width = np.random.uniform(-1, 1, size=num_bar_points)
+    bar_length = np.linspace(s[:,2].min()-1, s[:,2].max()+1, num_bar_points)
+    bar = np.column_stack((np.zeros(num_bar_points), bar_width, bar_length))
     dollar = np.vstack((s,bar))
     labels = np.ones(dollar.shape[0])
     labels[num_s_points:] = 2
     return dollar, labels
 
 
-def S_pt_cloud(n_pts):
+def s_curve(n_pts):
     theta = np.linspace(-np.pi-1, np.pi+1, n_pts)
     width = np.random.uniform(-1, 1, size=n_pts)
-    X = np.empty(theta.shape + (3,))
-    X[...,0] = np.sin(theta)
-    X[...,2] = np.cos(theta)
-    X[...,1] = width
-    first_half = slice(0, theta.shape[-1]//2)
-    X[...,first_half,2] = 2 + -X[...,first_half,2]
+    X = np.column_stack((np.sin(theta), width, np.cos(theta)))
+    mid = n_pts // 2
+    X[:mid,2] = 2 + -X[:mid,2]
     return X
 
 
