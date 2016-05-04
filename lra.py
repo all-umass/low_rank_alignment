@@ -47,8 +47,8 @@ def demo():
     noise_std = .05
 
     X,_ = dollar_sign(n_sline,n_lline)
-    X += np.random.normal(scale=noise_std)
-    Y = X + np.random.normal(scale=noise_std)
+    X += np.random.normal(scale=noise_std, size=X.shape)
+    Y = X + np.random.normal(scale=noise_std, size=X.shape)
     Y = np.rot90(Y).T[:,(0,2,1)]
 
     Xembed, Yembed = low_rank_align(X,Y,np.eye(n_sline+n_lline),d=2)
